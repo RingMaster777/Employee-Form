@@ -1,0 +1,971 @@
+﻿@model EmployeeModel
+@{
+    ViewData["Title"] = "Create Employee";
+}
+    <div class="shadow p-3 my-5 bg-white rounded">
+        <h1>Create a New Employee</h1>
+    </div>
+
+        <div class="container border p-3 ">
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
+ 
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger">
+                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                        {
+                            <p>@error.ErrorMessage</p>
+                        }
+                    </div>
+                }
+
+
+                <!-- General Information -->
+                <div class="container mt-5">
+                    <h3 class="shadow p-3 my-5 bg-white rounded">General Information</h3>
+
+
+                        <div class="form-group py-3">
+                                <label asp-for="ErpCifNo" class="control-label">Erp/Cif No</label>
+                                <input asp-for="ErpCifNo" class="form-control" placeholder="Enter a Unique Value [Required]"/>
+                                <span asp-validation-for="ErpCifNo" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="form row py-3">
+                            <div class="form-group col">
+                                <label asp-for="FirstName" class="control-label">First Name</label>
+                                <input asp-for="FirstName" class="form-control" placeholder="[Required]"/>
+                                <span asp-validation-for="FirstName" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col">
+                                <label asp-for="MiddleName" class="control-label">Middle Name</label>
+                                <input asp-for="MiddleName" class="form-control" />
+                                <span asp-validation-for="MiddleName" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="form row py-3">
+                            <div class="form-group col">
+                                <label asp-for="LastName" class="control-label">Last Name</label>
+                                <input asp-for="LastName" class="form-control" placeholder="[Required]"/>
+                                <span asp-validation-for="LastName" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col">
+                                <label asp-for="NickName" class="control-label">Nick Name</label>
+                                <input asp-for="NickName" class="form-control" />
+                                <span asp-validation-for="NickName" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row py-3">
+                            <div class="form-group col-md-3">
+                                <label asp-for="Gender" class="control-label">Gender</label>
+                                <select asp-for="Gender" class="form-control">
+                                    <option value="">Select your Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                                <span asp-validation-for="Gender" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label asp-for="Religion" class="control-label">Religion</label>
+                                <input asp-for="Religion" class="form-control" />
+                                <span asp-validation-for="Religion" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label asp-for="BloodGroup" class="control-label">Blood Group</label>
+                                <select asp-for="BloodGroup" class="form-control">
+                                    <option value="">Select Blood Group</option>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+                                </select>
+                                <span asp-validation-for="BloodGroup" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label asp-for="MaritalStatus" class="control-label">Marital Status</label>
+                                <select asp-for="MaritalStatus" class="form-control">
+                                    <option value="">Select Marital Status</option>
+                                    <option value="Married">Married</option>
+                                    <option value="Unmarried">Unmarried</option>
+                                </select>
+                                <span asp-validation-for="MaritalStatus" class="text-danger"></span>
+                            </div>
+
+                        </div>
+
+                        <div class="row py-3">
+                            <div class="form-group col-md-4">
+                                <label asp-for="NationalId" class="control-label">National Id</label>
+                                <input asp-for="NationalId" class="form-control" />
+                                <span asp-validation-for="NationalId" class="text-danger"></span>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label asp-for="Nationality" class="control-label">Nationality</label>
+                                <input asp-for="Nationality" class="form-control" />
+                                <span asp-validation-for="Nationality" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group col-md-4">
+                                <label asp-for="DateOfBirth" class="control-label">Date of Birth</label>
+                                <input asp-for="DateOfBirth" class="form-control" />
+                                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        
+                        <div class="row py-3">
+                            <div class="form-group col">
+                                <label for="photo">Photo</label>
+                                <input type="file" name="photo"  accept=".jpg,.jpeg,.png" class="form-control" />
+                            </div>
+
+                            <div class="form-group col">
+                                <label for="signature">Signature</label>
+                                <input type="file" name="signature"  accept=".jpg,.jpeg,.png" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="container py-3">
+                            <h5 class="mb-4">Knowledge of English</h5>
+                            <div class="row">
+
+                                <!-- Reading -->
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Reading</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" asp-for="KnowledgeOfEnglishReading" id="KnowledgeOfEnglishReadingYes" value="true" />
+                                            <label class="form-check-label" for="KnowledgeOfEnglishReadingYes">Yes</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" asp-for="KnowledgeOfEnglishReading" id="KnowledgeOfEnglishReadingNo" value="false" />
+                                            <label class="form-check-label" for="KnowledgeOfEnglishReadingNo">No</label>
+                                        </div>
+                                        <div class="text-danger mt-2" asp-validation-for="KnowledgeOfEnglishReading"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Writing -->
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Writing</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" asp-for="KnowledgeOfEnglishWriting" id="KnowledgeOfEnglishWritingYes" value="true" />
+                                            <label class="form-check-label" for="KnowledgeOfEnglishWritingYes">Yes</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" asp-for="KnowledgeOfEnglishWriting" id="KnowledgeOfEnglishWritingNo" value="false" />
+                                            <label class="form-check-label" for="KnowledgeOfEnglishWritingNo">No</label>
+                                        </div>
+                                        <div class="text-danger mt-2" asp-validation-for="KnowledgeOfEnglishWriting"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Speaking -->
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="form-label">Speaking</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" asp-for="KnowledgeOfEnglishSpeaking" id="KnowledgeOfEnglishSpeakingYes" value="true" />
+                                            <label class="form-check-label" for="KnowledgeOfEnglishSpeakingYes">Yes</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" asp-for="KnowledgeOfEnglishSpeaking" id="KnowledgeOfEnglishSpeakingNo" value="false" />
+                                            <label class="form-check-label" for="KnowledgeOfEnglishSpeakingNo">No</label>
+                                        </div>
+                                        <div class="text-danger mt-2" asp-validation-for="KnowledgeOfEnglishSpeaking"></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                </div>
+
+                <!-- Passport Information -->
+                <div class="container mt-5">
+                    <h3 class="shadow p-3 my-5 bg-white rounded">Passport Information</h3>
+                    <div class="row">
+                        <div class="form-group col-md-4">
+                            <label asp-for="PassportNumber" class="control-label">Passport Number</label>
+                            <input asp-for="PassportNumber" class="form-control" />
+                            <span asp-validation-for="PassportNumber" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label asp-for="IssuanceDate" class="control-label">Issuance Date</label>
+                            <input asp-for="IssuanceDate" class="form-control" />
+                            <span asp-validation-for="IssuanceDate" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label asp-for="ExpiryDate" class="control-label">Expiry Date</label>
+                            <input asp-for="ExpiryDate" class="form-control" />
+                            <span asp-validation-for="ExpiryDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Income Tax Information -->
+                <div class="container mt-5">
+                    <h3 class="shadow p-3 my-5 bg-white rounded">Income Tax Information</h3>
+                    <div class= "row py-3">
+                        <div class="form-group col-md-4">
+                            <label asp-for="TaxLocation" class="control-label">Tax Location</label>
+                            <input asp-for="TaxLocation" class="form-control" />
+                            <span asp-validation-for="TaxLocation" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label asp-for="TaxSubsidy" class="control-label">Tax Subsidy</label>
+                            <input asp-for="TaxSubsidy" class="form-control" />
+                            <span asp-validation-for="TaxSubsidy" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label asp-for="EtinNumber" class="control-label">E-TIN Number</label>
+                            <input asp-for="EtinNumber" class="form-control" />
+                            <span asp-validation-for="EtinNumber" class="text-danger"></span>
+                        </div>
+                        
+                    </div>
+
+                    <div class="row py-3">
+                        <div class="form-group col-md-4">
+                            <label asp-for="TaxCircle" class="control-label">Tax Circle</label>
+                            <input asp-for="TaxCircle" class="form-control" />
+                            <span asp-validation-for="TaxCircle" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label asp-for="TaxZone" class="control-label">Tax Zone</label>
+                            <input asp-for="TaxZone" class="form-control" />
+                            <span asp-validation-for="TaxZone" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label asp-for="TaxZoneLocation" class="control-label">Tax Zone Location</label>
+                            <input asp-for="TaxZoneLocation" class="form-control" />
+                            <span asp-validation-for="TaxZoneLocation" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                    
+                    
+                <!-- Place of Birth -->
+                <div class="container mt-5">
+                    <h3 class="shadow p-3 my-5 bg-white rounded">Place of Birth</h3>
+                    <div class="row">
+                        <div class="form-group col">
+                            <label asp-for="Country" class="control-label">Country</label>
+                            <input asp-for="Country" class="form-control" />
+                            <span asp-validation-for="Country" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col">
+                            <label asp-for="Place" class="control-label">Place</label>
+                            <input asp-for="Place" class="form-control" />
+                            <span asp-validation-for="Place" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Previous Experience -->
+                <div class="container mt-5">
+                    <h3 class="shadow p-3 my-5 bg-white rounded">Previous Experience</h3>
+                    <div class="row"> 
+                        <div class="form-group col-md-4">
+                            <label asp-for="ExperienceType" class="control-label">Experience Type</label>
+                            <input asp-for="ExperienceType" class="form-control" />
+                            <span asp-validation-for="ExperienceType" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label asp-for="YearOfExperience" class="control-label">Year of Experience</label>
+                            <input asp-for="YearOfExperience" class="form-control" />
+                            <span asp-validation-for="YearOfExperience" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label asp-for="ExperienceDetails" class="control-label">Experience Details</label>
+                            <input asp-for="ExperienceDetails" class="form-control" />
+                            <span asp-validation-for="ExperienceDetails" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Family Information -->
+                <div class="container mt-5">
+                    <h3 class="shadow p-3 my-5 bg-white rounded">Family Information</h3>
+                    <div class="row py-3">
+
+                        <div class="form-group col-md-4">
+                            <label asp-for="FatherName" class="control-label">Father's Name</label>
+                            <input asp-for="FatherName" class="form-control" />
+                            <span asp-validation-for="FatherName" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label asp-for="FatherOccupation" class="control-label">Father's Occupation</label>
+                            <input asp-for="FatherOccupation" class="form-control" />
+                            <span asp-validation-for="FatherOccupation" class="text-danger"></span>
+                        </div>
+
+
+                        <div class="form-group col-md-4">
+                            <label asp-for="FatherNid" class="control-label">Father's NID</label>
+                            <input asp-for="FatherNid" class="form-control" />
+                            <span asp-validation-for="FatherNid" class="text-danger"></span>
+                        </div>   
+                    </div>
+
+                    <div class="row py-3">
+                
+                        <div class="form-group col-md-4">
+                            <label asp-for="MotherName" class="control-label">Mother's Name</label>
+                            <input asp-for="MotherName" class="form-control" />
+                            <span asp-validation-for="MotherName" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label asp-for="MotherOccupation" class="control-label">Mother's Occupation</label>
+                            <input asp-for="MotherOccupation" class="form-control" />
+                            <span asp-validation-for="MotherOccupation" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label asp-for="MotherNid" class="control-label">Mother's NID</label>
+                            <input asp-for="MotherNid" class="form-control" />
+                            <span asp-validation-for="MotherNid" class="text-danger"></span>
+                        </div>
+                    </div>
+
+
+                    <div class="row py-3">
+                        <div class="form-group col">
+                            <label asp-for="ParentAddress" class="control-label">Parent Address</label>
+                            <input asp-for="ParentAddress" class="form-control" />
+                            <span asp-validation-for="ParentAddress" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Contact Information -->
+                <div class="container mt-5">
+                    <h3 class="shadow p-3 my-5 bg-white rounded">Contact Information</h3>
+                    <div class="form-group py-2">
+                        <label asp-for="PresentAddress" class="control-label">Present Address</label>
+                        <input asp-for="PresentAddress" class="form-control" />
+                        <span asp-validation-for="PresentAddress" class="text-danger"></span>
+                    </div>
+                    <div class="form-group py-2">
+                        <label asp-for="PermanentAddress" class="control-label">Permanent Address</label>
+                        <input asp-for="PermanentAddress" class="form-control" />
+                        <span asp-validation-for="PermanentAddress" class="text-danger"></span>
+                    </div>
+
+                    <div class="row py-3">
+                        <div class="form-group col-md-4">
+                            <label asp-for="EmployeeMobile" class="control-label">Mobile</label>
+                            <input asp-for="EmployeeMobile" class="form-control" />
+                            <span asp-validation-for="EmployeeMobile" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label asp-for="EmployeeTelephone" class="control-label">Telephone</label>
+                            <input asp-for="EmployeeTelephone" class="form-control" />
+                            <span asp-validation-for="EmployeeTelephone" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label asp-for="AlternativeMobile" class="control-label">Alternative Mobile</label>
+                            <input asp-for="AlternativeMobile" class="form-control" />
+                            <span asp-validation-for="AlternativeMobile" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row py-3">
+                        <div class="form-group col">
+                            <label asp-for="EmployeeFax" class="control-label">Fax</label>
+                            <input asp-for="EmployeeFax" class="form-control" />
+                            <span asp-validation-for="EmployeeFax" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col">
+                            <label asp-for="OfficialEmail" class="control-label">Official Email</label>
+                            <input asp-for="OfficialEmail" class="form-control" />
+                            <span asp-validation-for="OfficialEmail" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Emergency Contact -->
+                <div class="container mt-5">
+                    <h3 class="shadow p-3 my-5 bg-white rounded">Emergency Contact</h3>
+                    <div class="row py-3">
+                        <div class="form-group col">
+                            <label asp-for="ContactPerson" class="control-label">Name</label>
+                            <input asp-for="ContactPerson" class="form-control" />
+                            <span asp-validation-for="ContactPerson" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col">
+                            <label asp-for="Relation" class="control-label">Relation</label>
+                            <input asp-for="Relation" class="form-control" />
+                            <span asp-validation-for="Relation" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row py-3">
+                        <div class="form-group col-md-3">
+                            <label asp-for="EmergencyMobile" class="control-label">Mobile</label>
+                            <input asp-for="EmergencyMobile" class="form-control" />
+                            <span asp-validation-for="EmergencyMobile" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="EmergencyTelephone" class="control-label">Telephone</label>
+                            <input asp-for="EmergencyTelephone" class="form-control" />
+                            <span asp-validation-for="EmergencyTelephone" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="Email" class="control-label">Email</label>
+                            <input asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="EmergencyFax" class="control-label">Fax</label>
+                            <input asp-for="EmergencyFax" class="form-control" />
+                            <span asp-validation-for="EmergencyFax" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group col py-2">
+                        <label asp-for="ContactAddress" class="control-label">Contact Address</label>
+                        <input asp-for="ContactAddress" class="form-control" />
+                        <span asp-validation-for="ContactAddress" class="text-danger"></span>
+                    </div>
+                </div>
+
+            
+                <!-- Job Information -->
+                <div class="container mt-5">
+
+                    <h3 class="shadow p-3 my-5 bg-white rounded">Job Information</h3>
+
+                    <div class= "row py-3">
+                        <div class="form-group col-md-3">
+                            <label asp-for="JoiningDate" class="control-label">Joining Date</label>
+                            <input asp-for="JoiningDate" class="form-control" />
+                            <span asp-validation-for="JoiningDate" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="Activity" class="control-label">Activity</label>
+                            <input asp-for="Activity" class="form-control" />
+                            <span asp-validation-for="Activity" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="ProbationPeriod" class="control-label">Probation Period</label>
+                            <input asp-for="ProbationPeriod" class="form-control" />
+                            <span asp-validation-for="ProbationPeriod" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="ConfirmationDate" class="control-label">Confirmation Date</label>
+                            <input asp-for="ConfirmationDate" class="form-control" />
+                            <span asp-validation-for="ConfirmationDate" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class= "row py-3">
+                        <div class="form-group col-md-3">
+                            <label asp-for="SeparationPeriod" class="control-label">Separation Period</label>
+                            <input asp-for="SeparationPeriod" class="form-control" />
+                            <span asp-validation-for="SeparationPeriod" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="SeparationDate" class="control-label">Separation Date</label>
+                            <input asp-for="SeparationDate" class="form-control" />
+                            <span asp-validation-for="SeparationDate" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="ContractFor" class="control-label">Contract For</label>
+                            <input asp-for="ContractFor" class="form-control" />
+                            <span asp-validation-for="ContractFor" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="RenewDate" class="control-label">Renew Date</label>
+                            <input asp-for="RenewDate" class="form-control" />
+                            <span asp-validation-for="RenewDate" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row py-3">
+                        <div class="form-group col-md-3">
+                            <label asp-for="Company" class="control-label">Company</label>
+                            <input asp-for="Company" class="form-control" />
+                            <span asp-validation-for="Company" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="Region" class="control-label">Region</label>
+                            <input asp-for="Region" class="form-control" />
+                            <span asp-validation-for="Region" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="Site" class="control-label">Site</label>
+                            <input asp-for="Site" class="form-control" />
+                            <span asp-validation-for="Site" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="PayrollSite" class="control-label">Payroll Site</label>
+                            <input asp-for="PayrollSite" class="form-control" />
+                            <span asp-validation-for="PayrollSite" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row py-3">
+                        <div class="form-group col-md-3">
+                            <label asp-for="DepartmentalDivision" class="control-label">Departmental Division</label>
+                            <input asp-for="DepartmentalDivision" class="form-control" />
+                            <span asp-validation-for="DepartmentalDivision" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="Department" class="control-label">Department</label>
+                            <input asp-for="Department" class="form-control" />
+                            <span asp-validation-for="Department" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="Function" class="control-label">Function</label>
+                            <input asp-for="Function" class="form-control" />
+                            <span asp-validation-for="Function" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="Job" class="control-label">Job</label>
+                            <input asp-for="Job" class="form-control" />
+                            <span asp-validation-for="Job" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row py-3">
+                        <div class="form-group col-md-3">
+                            <label asp-for="Grade" class="control-label">Grade</label>
+                            <input asp-for="Grade" class="form-control" />
+                            <span asp-validation-for="Grade" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="Designation" class="control-label">Designation</label>
+                            <input asp-for="Designation" class="form-control" />
+                            <span asp-validation-for="Designation" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="ResponsibilityCenter" class="control-label">Responsibility Center</label>
+                            <input asp-for="ResponsibilityCenter" class="form-control" />
+                            <span asp-validation-for="ResponsibilityCenter" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="CostCenter" class="control-label">Cost Center</label>
+                            <input asp-for="CostCenter" class="form-control" />
+                            <span asp-validation-for="CostCenter" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row py-3">
+                        <div class="form-group col-md-3">
+                            <label asp-for="PaymentMode" class="control-label">Payment Mode</label>
+                                <select asp-for="PaymentMode" class="form-control">
+                                    <option value="">Select your Payment Mode</option>
+                                    <option value="Bank-Transfer">Bank-Transfer</option>
+                                    <option value="Cash">Cash</option>
+                                    <option value="Cheque">Cheque</option>
+                                </select>
+                            <span asp-validation-for="PaymentMode" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="BankAccountNo" class="control-label">Bank Account No</label>
+                            <input asp-for="BankAccountNo" class="form-control" />
+                            <span asp-validation-for="BankAccountNo" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="Bank" class="control-label">Bank</label>
+                            <input asp-for="Bank" class="form-control" />
+                            <span asp-validation-for="Bank" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="BankBranch" class="control-label">Bank Branch</label>
+                            <input asp-for="BankBranch" class="form-control" />
+                            <span asp-validation-for="BankBranch" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row py-3">
+                        <div class="form-group col">
+                            <label asp-for="EmployeeType" class="control-label"></label>
+                                <select asp-for="EmployeeType" class="form-control">
+                                    <option value="">Select Employment Type</option>
+                                    <option value="Full-Time">Full-Time</option>
+                                    <option value="Part-Time">Part-Time</option>
+                                    <option value="Intern">Intern</option>
+                                </select>
+                            <span asp-validation-for="EmployeeType" class="text-danger"></span>
+                    
+                        </div>
+                    
+                        <div class="form-group col">
+                            <label asp-for="EmployeeCategory" class="control-label"></label>
+                            <input asp-for="EmployeeCategory" class="form-control" />
+                            <span asp-validation-for="EmployeeCategory" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row py-3">
+                        <div class="form-group col-md-4">
+                            <label asp-for="BasicSalary" class="control-label">Basic Salary</label>
+                            <input asp-for="BasicSalary" class="form-control" />
+                            <span asp-validation-for="BasicSalary" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label asp-for="GrossSalary" class="control-label">Gross Salary</label>
+                            <input asp-for="GrossSalary" class="form-control" />
+                            <span asp-validation-for="GrossSalary" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label asp-for="PercentageOfBasicOnGrossSalary" class="control-label">% of Basic on Gross Salary</label>
+                            <input asp-for="PercentageOfBasicOnGrossSalary" class="form-control" />
+                            <span asp-validation-for="PercentageOfBasicOnGrossSalary" class="text-danger"></span>
+                        </div>
+                    </div>
+
+
+                    <div class="row py-3">
+                        <div class="form-group col-md-3">
+                            <label asp-for="NextIncrement" class="control-label">Next Increment</label>
+                            <input asp-for="NextIncrement" class="form-control" />
+                            <span asp-validation-for="NextIncrement" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="SalaryAdjustmentDate" class="control-label">Salary Adjustment Date</label>
+                            <input asp-for="SalaryAdjustmentDate" class="form-control" />
+                            <span asp-validation-for="SalaryAdjustmentDate" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="MedicalAllow" class="control-label">Medical Allowance</label>
+                            <input asp-for="MedicalAllow" class="form-control" />
+                            <span asp-validation-for="MedicalAllow" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label class="control-label">PF Member</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" asp-for="PFMember" id="PFMemberYes" value="true" />
+                                <label class="form-check-label" for="PFMemberYes">Yes</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" asp-for="PFMember" id="PFMemberNo" value="false" />
+                                <label class="form-check-label" for="PFMemberNo">No</label>
+                            </div>
+                            <span asp-validation-for="PFMember" class="text-danger"></span>
+                        </div>
+
+                    </div>
+
+                    <div class="row py-3">
+                        <div class="form-group col-md-4">
+                            <label asp-for="SupervisorId" class="control-label">Supervisor Id</label>
+                            <input asp-for="SupervisorId" class="form-control" />
+                            <span asp-validation-for="SupervisorId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label asp-for="Buddy" class="control-label">Buddy</label>
+                            <input asp-for="Buddy" class="form-control" />
+                            <span asp-validation-for="Buddy" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label asp-for="KpiGroup" class="control-label">KPI Group</label>
+                            <input asp-for="KpiGroup" class="form-control" />
+                            <span asp-validation-for="KpiGroup" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row py-3">
+                        <div class="form-group col-md-3">
+                            <label class="control-label">Direct Report Head</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" asp-for="DirectReportToFunctionHead" id="DirectReportYes" value="true" />
+                                <label class="form-check-label" for="DirectReportYes">Yes</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" asp-for="DirectReportToFunctionHead" id="DirectReportNo" value="false" />
+                                <label class="form-check-label" for="DirectReportNo">No</label>
+                            </div>
+                            <span asp-validation-for="DirectReportToFunctionHead" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            <label class="control-label">Is Trainer</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" asp-for="IsTrainer" id="IsTrainerYes" value="true" />
+                                <label class="form-check-label" for="IsTrainerYes">Yes</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" asp-for="IsTrainer" id="IsTrainerNo" value="false" />
+                                <label class="form-check-label" for="IsTrainerNo">No</label>
+                            </div>
+                            <span asp-validation-for="IsTrainer" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            <label class="control-label">Is Departmental Head</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" asp-for="IsDepartmentalHead" id="IsDepartmentalHeadYes" value="true" />
+                                <label class="form-check-label" for="IsDepartmentalHeadYes">Yes</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" asp-for="IsDepartmentalHead" id="IsDepartmentalHeadNo" value="false" />
+                                <label class="form-check-label" for="IsDepartmentalHeadNo">No</label>
+                            </div>
+                            <span asp-validation-for="IsDepartmentalHead" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label class="control-label">Mail User</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" asp-for="MailUser" id="MailUserYes" value="true" />
+                                <label class="form-check-label" for="MailUserYes">Yes</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" asp-for="MailUser" id="MailUserNo" value="false" />
+                                <label class="form-check-label" for="MailUserNo">No</label>
+                            </div>
+                            <span asp-validation-for="MailUser" class="text-danger"></span>
+                        </div>
+
+                    </div>
+
+                    <div class="row py-3">
+                        <div class="form-group col-md-3">
+                            <label asp-for="RecruitmentChannel" class="control-label">Recruitment Channel</label>
+                                <select asp-for="RecruitmentChannel" class="form-control">
+                                    <option value="">Select Recruitment Channel</option>
+                                    <option value="Job-Portal">Job-Portal</option>
+                                    <option value="Referral">Referral</option>
+                                    <option value="Agency">Agency</option>
+                                </select>
+                            <span asp-validation-for="RecruitmentChannel" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label asp-for="SimCardAllocationDate" class="control-label">Sim-Card Allocation Date</label>
+                            <input asp-for="SimCardAllocationDate" class="form-control" />
+                            <span asp-validation-for="SimCardAllocationDate" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="form-group col-md-3">
+                            <label class="control-label">Taxable Car Allocated</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" asp-for="TaxableCarAllocated" id="TaxableCarYes" value="true" />
+                                <label class="form-check-label" for="TaxableCarYes">Yes</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" asp-for="TaxableCarAllocated" id="TaxableCarNo" value="false" />
+                                <label class="form-check-label" for="TaxableCarNo">No</label>
+                            </div>
+                            <span asp-validation-for="TaxableCarAllocated" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group col-md-3">
+                            <label class="control-label">Car Allocated</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" asp-for="CarAllocated" id="CarYes" value="true" />
+                                <label class="form-check-label" for="CarYes">Yes</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" asp-for="CarAllocated" id="CarNo" value="false" />
+                                <label class="form-check-label" for="CarNo">No</label>
+                            </div>
+                            <span asp-validation-for="CarAllocated" class="text-danger"></span>
+                        </div>
+
+                    </div>
+
+                    <div class="row py-3">
+                        <div class="form-group col">
+                            <label asp-for="ShiftingGroup" class="control-label">Shifting Group</label>
+                            <Select asp-for="ShiftingGroup" class="form-control"> 
+                                <option value="">Select Shifting Group</option>
+                                <option value="Morning">Morning</option>
+                                <option value="Evening">Evening</option>
+                            </Select>
+                            <span asp-validation-for="ShiftingGroup" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col">
+                            <label asp-for="ShiftingPlan" class="control-label">Shifting Plan</label>
+                            <input asp-for="ShiftingPlan" class="form-control" />
+                            <span asp-validation-for="ShiftingPlan" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row py-3">
+                        <div class="form-group col-md-4">
+                            <label asp-for="LeavePlanHolder" class="control-label">Leave Plan Holder</label>
+                            <input asp-for="LeavePlanHolder" class="form-control" />
+                            <span asp-validation-for="LeavePlanHolder" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label asp-for="LeavePlanVerifier" class="control-label">Leave Plan Verifier</label>
+                            <input asp-for="LeavePlanVerifier" class="form-control" />
+                            <span asp-validation-for="LeavePlanVerifier" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label asp-for="LeaveApprovalAuthority" class="control-label">Leave Approval Authority</label>
+                            <input asp-for="LeaveApprovalAuthority" class="form-control" />
+                            <span asp-validation-for="LeaveApprovalAuthority" class="text-danger"></span>
+                        </div>
+                    </div>
+
+
+                    <div class= "row py-3">
+                        <div class="form-group col-md-4">
+                            <label class="control-label">Allocate Leave Quota</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" asp-for="AllocateLeaveQuota" id="AllocateLeaveQuotaYes" value="true" />
+                                <label class="form-check-label" for="AllocateLeaveQuotaYes">Yes</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" asp-for="AllocateLeaveQuota" id="AllocateLeaveQuotaNo" value="false" />
+                                <label class="form-check-label" for="AllocateLeaveQuotaNo">No</label>
+                            </div>
+                            <span asp-validation-for="AllocateLeaveQuota" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label class="control-label">Round Off Leave Balance</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" asp-for="RoundOffLeaveBalance" id="RoundOffYes" value="true" />
+                                <label class="form-check-label" for="RoundOffYes">Yes</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" asp-for="RoundOffLeaveBalance" id="RoundOffNo" value="false" />
+                                <label class="form-check-label" for="RoundOffNo">No</label>
+                            </div>
+                            <span asp-validation-for="RoundOffLeaveBalance" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group col-md-4">
+                            <label asp-for="GratuityPolicy" class="control-label"></label>
+                            <input asp-for="GratuityPolicy" class="form-control" />
+                            <span asp-validation-for="GratuityPolicy" class="text-danger"></span>
+                        </div>
+
+                    </div>
+
+                    <div class="row py-3">
+                        <div class="form-group col-md-4">
+                            <label asp-for="RequisitionApprovalAuthority" class="control-label">Requisition Approval Authority</label>
+                            <input asp-for="RequisitionApprovalAuthority" class="form-control" />
+                            <span asp-validation-for="RequisitionApprovalAuthority" class="text-danger"></span>
+                        </div>
+                        
+                        
+                        <div class="form-group col-md-4">
+                            <label asp-for="AttendanceLaxity" class="control-label">Attendance Laxity</label>
+                            <input asp-for="AttendanceLaxity" class="form-control" />
+                            <span asp-validation-for="AttendanceLaxity" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label asp-for="CBSBypassTransaction" class="control-label">CBS Bypass Transaction</label>
+                            <input asp-for="CBSBypassTransaction" class="form-control" />
+                            <span asp-validation-for="CBSBypassTransaction" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row py-3">
+                        <div class="form-group col">
+                            <label class="control-label">Self Also</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" asp-for="SelfAlso" id="SelfAlsoYes" value="true" />
+                                <label class="form-check-label" for="SelfAlsoYes">Yes</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" asp-for="SelfAlso" id="SelfAlsoNo" value="false" />
+                                <label class="form-check-label" for="SelfAlsoNo">No</label>
+                            </div>
+                            <span asp-validation-for="SelfAlso" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group col">
+                            <label class="control-label">Signature Authority</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" asp-for="SignatureAuthority" id="SignatureAuthorityYes" value="true" />
+                                <label class="form-check-label" for="SignatureAuthorityYes">Yes</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" asp-for="SignatureAuthority" id="SignatureAuthorityNo" value="false" />
+                                <label class="form-check-label" for="SignatureAuthorityNo">No</label>
+                            </div>
+                            <span asp-validation-for="SignatureAuthority" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group col">
+                            <label class="control-label">Expatriate</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" asp-for="Expatriate" id="ExpatriateYes" value="true" />
+                                <label class="form-check-label" for="ExpatriateYes">Yes</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" asp-for="Expatriate" id="ExpatriateNo" value="false" />
+                                <label class="form-check-label" for="ExpatriateNo">No</label>
+                            </div>
+                            <span asp-validation-for="Expatriate" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group col">
+                            <label class="control-label">Non Public Profile</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" asp-for="NonPublicProfile" id="NonPublicProfileYes" value="true" />
+                                <label class="form-check-label" for="NonPublicProfileYes">Yes</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" asp-for="NonPublicProfile" id="NonPublicProfileNo" value="false" />
+                                <label class="form-check-label" for="NonPublicProfileNo">No</label>
+                            </div>
+                            <span asp-validation-for="NonPublicProfile" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group col">
+                            <label class="control-label">Police Verification Done</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" asp-for="PoliceVerificationDone" id="PoliceVerificationYes" value="true" />
+                                <label class="form-check-label" for="PoliceVerificationYes">Yes</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" asp-for="PoliceVerificationDone" id="PoliceVerificationNo" value="false" />
+                                <label class="form-check-label" for="PoliceVerificationNo">No</label>
+                            </div>
+                            <span asp-validation-for="PoliceVerificationDone" class="text-danger"></span>
+                        </div>
+
+                    </div>
+
+                    <div class="row py-3">
+                        <div class="form-group col-md-4">
+                            <label asp-for="PromotionResponsible" class="control-label">Promotion Responsible</label>
+                            <input asp-for="PromotionResponsible" class="form-control" />
+                            <span asp-validation-for="PromotionResponsible" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label asp-for="IncrementResponsible" class="control-label">Increment Responsible</label>
+                            <input asp-for="IncrementResponsible" class="form-control" />
+                            <span asp-validation-for="IncrementResponsible" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label asp-for="ConfirmationResponsible" class="control-label">Confirmation Responsible</label>
+                            <input asp-for="ConfirmationResponsible" class="form-control" />
+                            <span asp-validation-for="ConfirmationResponsible" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <div class="form-group my-5 px-3 d-flex justify-content-between">
+                    <button type="submit" class="btn btn-primary" style="width:150px">Create User</button>
+                    @* <a asp-action="Index" class="btn btn-secondary" style="width:150px">Reset</a> *@
+                    <input type="reset" value="Reset" class="btn btn-secondary" />
+                </div>
+            </form>
+        </div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
