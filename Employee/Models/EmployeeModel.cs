@@ -59,18 +59,8 @@ public class EmployeeModel
 
 
     public string? PhotoPath { get; set; }
-
-    // [NotMapped]
-    // public IFormFile? Photo { get; set; }
-
     public string? SignaturePath { get; set; }
 
-    // [NotMapped]
-    // public IFormFile? Signature { get; set; }
-
-
-
-    
     // Passport Information
     [RegularExpression(@"^PB-\d{8}$", ErrorMessage = "Invalid Passport Number.")]
     [Display(Prompt = "PB-[8 digit]")]

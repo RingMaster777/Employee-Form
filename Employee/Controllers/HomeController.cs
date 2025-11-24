@@ -1,214 +1,171 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Employee.Models;
-using Employee.Data;
-using Microsoft.EntityFrameworkCore;
 
 
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using System.IO;
-using System.Threading.Tasks;
-
-public class HomeController : Controller
+namespace Employee.Controllers
 {
 
-    private readonly ILogger<HomeController> _logger; // to initialize the default logger
-    private readonly IEmployeeService _employeeService; // to initialize the service class
-    private readonly IWebHostEnvironment _hostEnvironment; // to get and save the file path
-    private readonly DataProtectionHelper _dataProtectionHelper; // to initialize the Encryption Decryption helper class
-
-    public HomeController(ILogger<HomeController> logger, IEmployeeService employeeService, IWebHostEnvironment hostEnvironment, DataProtectionHelper dataProtectionHelper)
+    public class HomeController : Controller
     {
-        _logger = logger;
-        _employeeService = employeeService;
-        _hostEnvironment = hostEnvironment;
-        _dataProtectionHelper = dataProtectionHelper;
-    }
+        private readonly ILogger<HomeController> _logger;
+        private readonly IEmployeeService _employeeService;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-
-    
-    // initialize at the start of the project . Gets all the Employee List in the database
-    public async Task<IActionResult> Index(){
-
-        IEnumerable<EmployeeModel> objEmployeeList =  await _employeeService.GetAllEmployeesAsync();
-        return View(objEmployeeList);
-    }
-
-
-
-    [HttpGet]
-    public IActionResult Create()
-    {
-        return View();
-    }
-
-
-    // To Create a new employee data
-    //POST
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(EmployeeModel obj, IFormFile photo, IFormFile signature)
-    {
-
-        try
+        public HomeController(ILogger<HomeController> logger, IEmployeeService employeeService, IWebHostEnvironment hostEnvironment)
         {
-            // to check if the employee id already exits or not
-            bool exists  =  await _employeeService.EmployeeExistsAsync(obj.ErpCifNo);
-
-            if(exists){
-
-                TempData["errorMessage"] = "This Erp No is already occupied by an Employee ";
-                ModelState.Clear();
-                return View();
-
-            }
-
-            // gets the file folder path
-            string uploadsFolder = Path.Combine(_hostEnvironment.WebRootPath, "uploads", obj.ErpCifNo);
-
-            if(photo != null) {
-
-                // File Helper class to handle the file
-                obj.PhotoPath = await FileHelper.SaveFileAsync(photo, uploadsFolder);
-                
-                if(obj.PhotoPath == null){
-                    return View(obj);
-                }
-            }
-            if(signature != null) {
-
-                obj.SignaturePath = await FileHelper.SaveFileAsync(signature, uploadsFolder);
-                if(obj.SignaturePath == null){
-                    return View(obj);
-                }
-            }
-
-            if(ModelState.IsValid){
-
-                // Calls the Data Protection Helper class to Encrypt the data
-                obj.BankAccountNo = _dataProtectionHelper.Encrypt(obj.BankAccountNo);
-                obj.PassportNumber = _dataProtectionHelper.Encrypt(obj.PassportNumber);
-
-
-                // creates an employee
-                await _employeeService.AddEmployeeAsync(obj);
-                TempData["successMessage"] = "A new Employee Data Created Successfully";
-                ModelState.Clear();
-                return RedirectToAction(nameof(Index));
-
-            }else{
-                TempData["errorMessage"] = "Model State is invalid";
-                return View();
-            }
+            _logger = logger;
+            _employeeService = employeeService;
+            _hostEnvironment = hostEnvironment;
         }
-        catch (System.Exception ex)
+
+        // Gets all employees from database
+        public async Task<IActionResult> Index()
         {
-            
-            TempData["errorMessage"] = ex.Message;
+            IEnumerable<EmployeeModel> objEmployeeList = await _employeeService.GetAllEmployeesAsync();
+            return View(objEmployeeList);
+        }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
             return View();
         }
-        
-    }
 
-
-    
-    [HttpGet]
-    public async Task<IActionResult> Edit(string? id)
-    {
-        if(id == null){
-            return RedirectToAction(nameof(Index));
-        }
-
-        var employee = await _employeeService.GetEmployeeByIdAsync(id);
-        
-        if (employee != null)
+        // Create a new employee
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(EmployeeModel obj, IFormFile? photo, IFormFile? signature)
         {
-            // To Decrypt data to show on the form if exits
-            employee.BankAccountNo = _dataProtectionHelper.Decrypt(employee.BankAccountNo);
-            employee.PassportNumber = _dataProtectionHelper.Decrypt(employee.PassportNumber);
-            return View(employee);
-        } 
-
-        TempData["errorMessage"] = $"Employee details not found with Id : {id}";
-
-        return RedirectToAction(nameof(Index));
-    }
-
-    //POST
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(EmployeeModel employee)
-    {
-
-            if(ModelState.IsValid){
+            try
+            {
+                // Delegate creation (files + encryption + persistence) to service
+                if (!ModelState.IsValid)
+                {
+                    TempData["errorMessage"] = "Model State is invalid";
+                    return View(obj);
+                }
 
                 try
                 {
+                    await _employeeService.CreateEmployeeAsync(obj, photo, signature, _hostEnvironment.WebRootPath);
+                    TempData["successMessage"] = "A new Employee Data Created Successfully";
+                    ModelState.Clear();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (InvalidOperationException iox)
+                {
+                    // expected business rule (e.g. duplicate Erp)
+                    TempData["errorMessage"] = iox.Message;
+                    return View(obj);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating employee");
+                TempData["errorMessage"] = ex.Message;
+                return View(obj);
+            }
+        }
 
-                    // Encrypt sensitive data to save them back
-                    employee.BankAccountNo = _dataProtectionHelper.Encrypt(employee.BankAccountNo);
-                    employee.PassportNumber = _dataProtectionHelper.Encrypt(employee.PassportNumber);
-                    var updatedEmployee = await _employeeService.UpdateEmployeeAsync(employee);
+        [HttpGet]
+        public async Task<IActionResult> Edit(string? id)
+        {
+            if (id == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var employee = await _employeeService.GetEmployeeForEditAsync(id);
+            if (employee != null)
+            {
+                return View(employee);
+            }
+
+            TempData["errorMessage"] = $"Employee details not found with Id : {id}";
+            return RedirectToAction(nameof(Index));
+        }
+
+        // Update employee
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(EmployeeModel employee)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var updatedEmployee = await _employeeService.UpdateEmployeeWithFilesAsync(employee, null, null, _hostEnvironment.WebRootPath);
                     if (updatedEmployee == null)
                     {
                         TempData["errorMessage"] = "Employee not found.";
-                        
+                        return RedirectToAction(nameof(Index));
                     }
 
                     TempData["successMessage"] = "Employee updated successfully.";
                     return RedirectToAction(nameof(Index));
-                    
                 }
-                catch (System.Exception ex)
-                {           
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error updating employee");
                     TempData["errorMessage"] = ex.Message;
-                    return View();
-        
+                    return View(employee);
                 }
-                // return RedirectToAction(nameof(Index));
-            }else{
+            }
+            else
+            {
                 TempData["errorMessage"] = "Model State is invalid";
                 return View(employee);
             }
-       
-        
-    }
+        }
 
-    [HttpPost]
-    public async Task<IActionResult> Delete(EmployeeModel employee)
-    {
-
-        // To delete the file 
-        var result = await _employeeService.DeleteEmployeeAsync(employee);
-        if (!result)
+        // Delete employee
+        [HttpPost]
+        public async Task<IActionResult> Delete(EmployeeModel employee)
         {
-            TempData["errorMessage"] = "Failed to delete the employee.";
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                // Delete employee from database
+                var result = await _employeeService.DeleteEmployeeAsync(employee);
+                if (!result)
+                {
+                    TempData["errorMessage"] = "Failed to delete the employee.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                // Delete associated files and folder (if ErpCifNo available)
+                var erp = employee?.ErpCifNo;
+                if (!string.IsNullOrWhiteSpace(erp))
+                {
+                    bool isDeleted = await _employeeService.DeleteEmployeeFilesAsync(erp, _hostEnvironment.WebRootPath);
+                    if (!isDeleted)
+                    {
+                        _logger.LogWarning("Could not delete files for employee {EmployeeId}", erp);
+                    }
+                }
+
+                TempData["successMessage"] = "Employee deleted successfully.";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting employee");
+                TempData["errorMessage"] = ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
         }
 
-        // if delete successful then delete the corresponding file and folder
-        // Construct the folder path
-        string folderPath = Path.Combine(_hostEnvironment.WebRootPath, "uploads", employee.ErpCifNo);
-
-        // Delete the folder
-        bool isDeleted = await FileHelper.DeleteFolderAsync(folderPath);
-        if(!isDeleted){
-            TempData["errorMessage"] = "Can not delete the Images.";
+        public IActionResult Privacy()
+        {
+            return View();
         }
-        TempData["successMessage"] = "Employee deleted successfully.";
-        return RedirectToAction(nameof(Index));
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = System.Diagnostics.Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
     }
 
 
-    public IActionResult Privacy()
-    {
-        return View();
-    }
-
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-    }
 }

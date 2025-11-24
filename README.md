@@ -1,110 +1,269 @@
-# Employee - Form
+# Employee Management System
 
 ## Overview
 
-The Application is a web application built with ASP.NET Core MVC framework that allows users to manage employee data, including personal details, photos, and signatures. It supports CRUD (Create, Read, Update, Delete) operations for employee records.
+A modern ASP.NET Core MVC web application for managing employee data with secure storage, file uploads, and comprehensive data validation. Built with clean architecture principles and best practices.
 
-## Features
+## Key Features
 
-- Create, read, update, and delete employee records.
-- Upload and manage employee photos and signatures.
-- Secure storage of sensitive information using encryption.
-- Custom logging to monitor and troubleshoot application issues.
-- Custom Helpers to deal with file uploads and data security
+- **Employee Management:** Create, read, update, and delete employee records
+- **File Management:** Upload and manage employee photos and digital signatures
+- **Security:** Encrypted storage of sensitive information (Bank Account No, Passport Number)
+- **Logging:** Comprehensive request/response logging with Serilog
+- **Validation:** Data annotations for robust input validation
+- **Testing:** Complete unit test coverage with mocked dependencies
+- **Transaction Management:** Database transaction support for delete operations
+
+## Technology Stack
+
+- **.NET Framework:** .NET 9.0 (Latest LTS)
+- **Web Framework:** ASP.NET Core MVC
+- **Database:** Entity Framework Core with SQL Server
+- **Encryption:** ASP.NET Core Data Protection API
+- **Logging:** Serilog with File sink
+- **Testing:** xUnit + Moq
+- **Languages:** C# 12+
 
 ## Prerequisites
 
-- [.NET SDK 6.0](https://dotnet.microsoft.com/download/dotnet/6.0)
-- [Visual Studio 2022](https://visualstudio.microsoft.com/downloads/) or [Visual Studio Code](https://code.visualstudio.com/)
-- A supported database system (e.g., SQL Server)
+- [.NET SDK 9.0](https://dotnet.microsoft.com/download/dotnet/9.0)
+- [Visual Studio 2022+](https://visualstudio.microsoft.com/downloads/) or [Visual Studio Code](https://code.visualstudio.com/)
+- [SQL Server](https://www.microsoft.com/sql-server/sql-server-downloads) (any version)
 
-## Installation
+## Installation & Setup
 
-1. **Clone the repository:**
+### 1. Clone the Repository
 
-   ```bash
-   https://github.com/RingMaster777/Employee-Form.git
-   ```
+```bash
+git clone https://github.com/RingMaster777/Employee-Form.git
+cd Employee-Form
+```
 
-2. **Navigate to the project directory:**
+### 2. Restore Dependencies
 
-   ```bash
-   cd Employee
-   ```
+```bash
+dotnet restore
+```
 
-3. **Restore the project dependencies:**
+### 3. Configure Database Connection
 
-   ```bash
-   dotnet restore
-   ```
+Update `appsettings.json`:
 
-4. **Update the database:**
+```json
+"ConnectionStrings": {
+  "DefaultConnection": "Server=YOUR_SERVER;Database=Employee;Integrated Security=true;TrustServerCertificate=true;"
+}
+```
 
-   ```bash
-   dotnet ef database update
-   ```
+### 4. Create Database
 
-5. **Run the application:**
+```bash
+dotnet ef database update
+```
 
-   ```bash
-   dotnet run
-   ```
+### 5. Run the Application
+
+```bash
+dotnet run
+```
+
+The application will be available at `https://localhost:5001`
+
+## Project Structure
+
+```
+Employee/
+├── Controllers/          # MVC Controllers
+│   └── HomeController.cs
+├── Services/            # Business Logic Layer
+│   ├── IEmployeeService.cs
+│   └── EmployeeService.cs
+├── Repositories/        # Data Access Layer
+│   ├── IEmployeeRepository.cs
+│   └── EmployeeRepository.cs
+├── Models/              # Data Models
+│   ├── EmployeeModel.cs
+│   └── ErrorViewModel.cs
+├── Data/                # Database Context
+│   └── ApplicationDbContext.cs
+├── Helpers/             # Utility Classes
+│   ├── FileHelper.cs
+│   └── DataProtectionHelper.cs
+├── Middleware/          # Custom Middleware
+│   └── LoggingMiddleware.cs
+├── Views/               # Razor Views
+└── wwwroot/             # Static Files
+
+EmployeeTest/
+├── EmployeeServiceTests.cs    # Comprehensive Unit Tests
+```
+
+## Architecture & Design Patterns
+
+### Clean Architecture
+
+- **Separation of Concerns:** Controller → Service → Repository → Database
+- **Dependency Injection:** All dependencies injected via constructor
+- **Interface-Based Design:** IEmployeeService and IEmployeeRepository abstractions
+
+### Best Practices Implemented
+
+- ✅ Null checking and validation
+- ✅ Async/await for all I/O operations
+- ✅ Transaction management for delete operations
+- ✅ Comprehensive error handling with logging
+- ✅ Meaningful exception messages
+- ✅ Repository pattern for data access
+- ✅ Service layer for business logic
+- ✅ Constructor injection for testability
+
+## Key Components
+
+### EmployeeService
+
+- Handles all business logic operations
+- Includes transaction management for delete operations
+- Encrypts/decrypts sensitive data
+- Manages file uploads and deletions
+- Comprehensive error handling with logging
+
+### FileHelper
+
+- Validates file types (jpg, jpeg, png only)
+- Manages file uploads to organized folders
+- Handles folder deletion with error recovery
+
+### DataProtectionHelper
+
+- Encrypts/decrypts using ASP.NET Core DPAPI
+- Protects sensitive fields (Bank Account, Passport)
+
+### LoggingMiddleware
+
+- Logs all HTTP requests and response times
+- Uses Serilog for structured logging
+
+## Testing
+
+### Run All Tests
+
+```bash
+dotnet test
+```
+
+### Unit Tests Included
+
+- ✅ GetAllEmployeesAsync
+- ✅ GetEmployeeByIdAsync
+- ✅ AddEmployeeAsync
+- ✅ UpdateEmployeeAsync
+- ✅ DeleteEmployeeAsync
+- ✅ EmployeeExistsAsync
+- ✅ Encryption/Decryption
+- ✅ Input Validation
 
 ## Configuration
 
-1. **Connection Strings:**
+### Logging Configuration
 
-   Update the `appsettings.json` file with your database connection string:
+Configure in `appsettings.json`:
 
-   ```json
-   "ConnectionStrings": {
-     "DefaultConnection": "Server=your-server;Database=your-database;User Id=your-username;Password=your-password;"
-   }
-   ```
+```json
+"Logging": {
+  "LogLevel": {
+    "Default": "Information",
+    "Microsoft.AspNetCore": "Warning",
+    "Employee": "Information"
+  }
+}
+```
 
-2. **Data Protection:**
+Logs are stored in the `logs/` directory with daily rolling intervals.
 
-   Ensure that data protection keys are properly configured in the `Program.cs`:
+### Data Protection Keys
 
-   ```csharp
-   builder.Services.AddDataProtection()
-   .PersistKeysToFileSystem(new DirectoryInfo(@"c:\keys"))
-   .SetDefaultKeyLifetime(TimeSpan.FromDays(14));
-   ```
+Keys are stored in `c:\keys\` (configurable in Program.cs):
 
-## Usage
+```csharp
+.PersistKeysToFileSystem(new DirectoryInfo(@"c:\keys"))
+.SetDefaultKeyLifetime(TimeSpan.FromDays(14))
+```
 
-- **Employee Details:**
-  See the employee List on the indx field.
+## API Endpoints
 
-- **Create an Employee:**
-  Navigate to the `Create` page to add a new employee. Fill out the form and upload the necessary files.
+### Employee Operations
 
-- **Edit an Employee:**
-  Select an employee from the list and navigate to the `Edit` page to update their details.
+- `GET /` - List all employees
+- `GET /Create` - Employee creation form
+- `POST /Create` - Create new employee
+- `GET /Edit/{id}` - Employee edit form
+- `POST /Edit` - Update employee
+- `POST /Delete` - Delete employee
 
-- **Delete an Employee:**
-  On the `Edit` page press the delete button to delete. This will also remove the associated folder and files from the server.
+## Security Considerations
 
-## Middleware
+1. **Data Encryption:** Sensitive fields are encrypted using DPAPI
+2. **File Validation:** Only image files (.jpg, .jpeg, .png) accepted
+3. **SQL Injection Protection:** Entity Framework parameterized queries
+4. **CSRF Protection:** ValidateAntiForgeryToken attributes
+5. **Transaction Safety:** Delete operations wrapped in transactions
 
-The application includes custom middleware for logging:
+## Error Handling
 
-- **Logging Middleware:**
-  Logs all incoming requests and responses to a file located in the `Logs` directory.
+All operations include:
 
-## Helpers
+- Input validation
+- Null checking
+- Exception logging
+- User-friendly error messages
+- Rollback on transaction failure
 
-The application includes custom Helpers for file upload and data security:
+## Performance Considerations
 
-- **FileHelper.cs**
-  Helps to upload and delete file
+- Async/await for non-blocking I/O
+- Transaction isolation for data integrity
+- Efficient logging without blocking
+- Proper resource disposal
 
-- **DataProtectionHelper.cs**
-  Helps to encrypt and decrypt necessary data
+## Troubleshooting
 
-## Acknowledgements
+### Database Connection Issues
 
-- [ASP.NET Core Documentation](https://docs.microsoft.com/en-us/aspnet/core/)
-- [Entity Framework Core Documentation](https://docs.microsoft.com/en-us/ef/core/)
-- [Serilog Documentation](https://serilog.net/)
+- Verify connection string in `appsettings.json`
+- Ensure SQL Server is running and accessible
+- Check Windows Authentication or SQL Server credentials
+
+### File Upload Errors
+
+- Verify `wwwroot/uploads/` directory exists and is writable
+- Check file size and format (jpg, jpeg, png only)
+
+### Encryption Errors
+
+- Ensure `c:\keys\` directory exists and is accessible
+- Check DPAPI key permissions
+- Verify data wasn't modified outside the application
+
+## Future Enhancements
+
+- [ ] API endpoints for mobile apps
+- [ ] Advanced search and filtering
+- [ ] Batch employee import/export
+- [ ] Email notifications
+- [ ] Role-based access control
+- [ ] Audit logging
+- [ ] Performance metrics dashboard
+
+## License
+
+This project is open source and available under the MIT License.
+
+## Author
+
+**Rashik Mahmud**
+
+- GitHub: [@RingMaster777](https://github.com/RingMaster777)
+
+## Support
+
+For issues, questions, or suggestions, please create an issue in the GitHub repository.

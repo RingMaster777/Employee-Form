@@ -20,16 +20,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
     builder.Configuration.GetConnectionString("DefaultConnection")
 ));
 
-// builder.Services.AddSingleton<IWebHostEnvironment>(sp => sp.GetRequiredService<IWebHostEnvironment>());
-
 // Register Data Protection services
-builder.Services.AddDataProtection();
-builder.Services.AddSingleton<DataProtectionHelper>();
-
-// Configure Data Protection
 builder.Services.AddDataProtection()
-        .PersistKeysToFileSystem(new DirectoryInfo(@"c:\keys")) // Optional: specify key storage location
-        .SetDefaultKeyLifetime(TimeSpan.FromDays(14)); // Optional: set key lifetime
+        .PersistKeysToFileSystem(new DirectoryInfo(@"c:\keys"))
+        .SetDefaultKeyLifetime(TimeSpan.FromDays(14));
+
+builder.Services.AddSingleton<DataProtectionHelper>();
 
 
 // for repository
