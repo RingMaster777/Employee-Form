@@ -46,6 +46,21 @@ Migrations/
 **/wwwroot/uploads/
 **/ckeys/
 
+# Data protection keys and key files
+**/keys/
+**/*keys*/
+**/*key*.xml
+key-*.xml
+
+# Debug symbols
+*.pdb
+
+# Rich patterns to catch incorrectly committed dev files
+**/.vs/
+**/*.user
+**/*.suo
+**/*.userosscache
+
 # IDE
 .idea/
 .vs/
